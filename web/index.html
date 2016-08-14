@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <title>JukaiWriter</title>
+    <style>
+        #container {
+            width: 1200px;
+        }
+        #view {
+            float: left;
+            width: 700px;
+            height: 500px;
+            top: 200px;
+        }
+        #pdfview {
+            float: right;
+            top: 200px;
+            width: 500px;
+            height: 800px;
+        }
+        #editor {
+            bottom: 0px;
+            width: 700px;
+            height: 300px;
+        }
+    </style>
+<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="http://weaver.nlplab.org/~brat/demo/latest/style-vis.css"/>
+<script type="text/javascript" src="http://weaver.nlplab.org/~brat/demo/latest/client/lib/head.load.min.js"></script>
+</head>
+<body>
+<!-- override a few style-vis.css settings for the embedded version to make things larger -->
+<style type="text/css">
+text { font-size: 20px; }
+.span text { font-size: 16px; }
+.arcs text { font-size: 15px; }
+</style>
+<div id="container">
+    <div id="view"></div>
+    <div id="pdfview">
+        <img src="../corpus/D10-1024/D10-1024-01.png">
+    </div>
+    <div id="editor"></div>
+</div>
+
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="https://ace.c9.io/build/src/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+var connection = new WebSocket('ws://' + window.location.host);
+var editor = ace.edit("editor");
+editor.setFontSize(16);
+//editor.setTheme("ace/theme/monokai");
+editor.getSession().setUseWrapMode(true);
+editor.getSession().setTabSize(2);
+editor.focus();
+editor.getSession().on('change', function(e) {
+    var data = editor.getValue();
+    if (data.length == 0) editor.setValue("")
+    else connection.send(data);
+});
+
+$(function(){
+    connection.onmessage = function(msg){
+
+        /*
+        var doc = JSON.parse(msg.data);
+        var text = "";
+        var entities = [];
+        var id = 1;
+        for (var i = 0; i < doc.length; i++) {
+            var sent = doc[i];
+            text += sent.map(t => t.form).join(" ") + "\n";
+            for (var k = 0; k < sent.length; k++) {
+                var t = sent[k];
+                var a = t.pos - 1 + t.form.length;
+                var e = [ id, t.cat, [[ t.pos-1, a ]] ];
+                id += 1;
+                entities.push(e);
+            }
+        }
+        */
+    }
+});
+</script>
+</body>
+</html>
